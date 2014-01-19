@@ -4,16 +4,11 @@ import (
 	"html/template"
 	"io"
 	"net/http"
+	"strings"
 
 	"appengine"
 	"appengine/blobstore"
 )
-
-type Game struct {
-	Name  string
-	Email string
-	File  []byte
-}
 
 var templates = template.Must(template.ParseFiles(
 	"packrat/application.html",
@@ -33,12 +28,12 @@ func serveError(c appengine.Context, w http.ResponseWriter, err error) {
 }
 
 func init() {
-	http.HandleFunc("/", root)
-	http.HandleFunc("/new", submitGame)
-	http.HandleFunc("/serve/", handleServe)
+	http.HandleFunc("/", handleRoot)
+	http.HandleFunc("/new", handleSubmit)
+	http.HandleFunc("/game/", handleGame)
 }
 
-func root(w http.ResponseWriter, r *http.Request) {
+func handleRoot(w http.ResponseWriter, r *http.Request) {
 	c := appengine.NewContext(r)
 	uploadURL, err := blobstore.UploadURL(c, "/new", nil)
 	if err != nil {
@@ -48,7 +43,7 @@ func root(w http.ResponseWriter, r *http.Request) {
 	renderTemplate(w, "index", uploadURL)
 }
 
-func submitGame(w http.ResponseWriter, r *http.Request) {
+func handleSubmit(w http.ResponseWriter, r *http.Request) {
 	c := appengine.NewContext(r)
 	blobs, _, err := blobstore.ParseUpload(r)
 	if err != nil {
@@ -61,9 +56,11 @@ func submitGame(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/", http.StatusFound)
 		return
 	}
-	http.Redirect(w, r, "/serve/?blobKey="+string(file[0].BlobKey), http.StatusFound)
+	http.Redirect(w, r, "/game/"+string(file[0].BlobKey), http.StatusFound)
 }
 
-func handleServe(w http.ResponseWriter, r *http.Request) {
-	blobstore.Send(w, appengine.BlobKey(r.FormValue("blobKey")))
+func handleGame(w http.ResponseWriter, r *http.Request) {
+	parts := strings.Split(r.URL.Path, "/")
+	blobKey := parts[len(parts)-1]
+	blobstore.Send(w, appengine.BlobKey(blobKey))
 }
