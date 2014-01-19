@@ -1,16 +1,25 @@
 {{template "header"}}
 <div class="row">
   <h1>Submit Application</h1>
-  <form action="/new" method="post">
+  <form action="/new" method="post" data-abide>
     <div class="large-4 columns">
-      <label>Name</label>
-      <input type="text" placeholder="My Incredible Game" />
+      <div class="name-field">
+        <label>Name</label>
+        <input type="text" required pattern="alpha_numeric" placeholder="My Incredible Game" />
+        <small class="error">Name is required and must be a string.</small>
+      </div>
 
-      <label>Email</label>
-      <input type="email" placeholder="you@example.com" />
+      <div class="name-field">
+        <label>Email</label>
+        <input type="email" required pattern="email" placeholder="you@example.com" />
+        <small class="error">A valid email is required.</small>
+      </div>
 
-      <label>SWF File</label>
-      <input type="file" />
+      <div class="name-field">
+        <label>SWF File</label>
+        <input type="file" required />
+        <small class="error">File is required.</small>
+      </div>
 
       <input type="submit" value="Submit" class="button" /> 
     </div>
