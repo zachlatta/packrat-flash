@@ -1,7 +1,7 @@
 {{template "header"}}
 <div class="row">
   <h1>Submit Application</h1>
-  <form action="/new" method="post" data-abide>
+  <form action="{{.}}" method="post" enctype="multipart/form-data" data-abide>
     <div class="large-4 columns">
       <div class="name-field">
         <label>Name</label>
@@ -17,7 +17,7 @@
 
       <div class="name-field">
         <label>SWF File</label>
-        <input type="file" required />
+        <input type="file" name="file" required />
         <small class="error">File is required.</small>
       </div>
 
