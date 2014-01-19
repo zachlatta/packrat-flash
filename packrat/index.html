@@ -1,0 +1,19 @@
+{{template "header"}}
+<div class="row">
+  <h1>Submit Application</h1>
+  <form action="/new" method="post">
+    <div class="large-4 columns">
+      <label>Name</label>
+      <input type="text" placeholder="My Incredible Game" />
+
+      <label>Email</label>
+      <input type="email" placeholder="you@example.com" />
+
+      <label>SWF File</label>
+      <input type="file" />
+
+      <input type="submit" value="Submit" class="button" /> 
+    </div>
+  </form>
+</div>
+{{template "footer"}}

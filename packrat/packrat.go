@@ -1,14 +1,24 @@
 package packrat
 
 import (
-	"fmt"
+	"html/template"
 	"net/http"
 )
 
-func init() {
-	http.HandleFunc("/", handler)
+var templates = template.Must(template.ParseFiles(
+	"packrat/application.html",
+	"packrat/index.html"))
+
+func renderTemplate(w http.ResponseWriter, tmpl string, i interface{}) {
+	if err := templates.ExecuteTemplate(w, tmpl+".html", i); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 }
 
-func handler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprint(w, "Hello world!")
+func init() {
+	http.HandleFunc("/", root)
+}
+
+func root(w http.ResponseWriter, r *http.Request) {
+	renderTemplate(w, "index", nil)
 }
